@@ -431,62 +431,23 @@ const characters = [
   }
 ];
 
-const TOTAL_ROUNDS = 5;
+const state={active:[],groups:[],groupIndex:0,round:0,roundWinners:[],score:new Map(),reachedRound:new Map(),totalEstimated:1,answered:0,result:[]};
+const $=id=>document.getElementById(id);
 
-const state = {
-  items: [],
-  groups: [],
-  groupIndex: 0,
-  round: 0,
-  totalQuestions: 0,
-  answered: 0,
-  result: [],
-  score: new Map(),
-  wins: new Map(),
-  appearances: new Map()
-};
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function initials(name){return name.replace(/[・\s\.／]/g,"").slice(0,2);}
+function show(id){document.querySelectorAll(".screen").forEach(el=>el.classList.remove("active"));$(id).classList.add("active");window.scrollTo({top:0,behavior:"instant"});}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function imageSrc(path){return encodeURI(path);}
+function imageMarkup(c){return `<img src="${imageSrc(c.image)}" alt="${escapeHtml(c.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="fallback" style="display:none">${escapeHtml(initials(c.name))}</div>`;}
 
-const $ = id => document.getElementById(id);
+function renderHero(){
+  $("member-count").textContent=`${characters.length}人から、あなたのTOP9を。`;
+  const box=$("hero-collage");box.innerHTML="";
 
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function initials(name) {
-  return name.replace(/[・\s\.／]/g, "").slice(0, 2);
-}
-
-function show(id) {
-  document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
-  $(id).classList.add("active");
-  window.scrollTo({ top: 0, behavior: "instant" });
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[m]);
-}
-
-function imageSrc(path) {
-  return encodeURI(path);
-}
-
-function imageMarkup(c) {
-  return `<img src="${imageSrc(c.image)}" alt="${escapeHtml(c.name)}"
-    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-    <div class="fallback" style="display:none">${escapeHtml(initials(c.name))}</div>`;
-}
-
-function renderHero() {
-  $("member-count").textContent = `${characters.length}人から、あなたのTOP9を。`;
-  const box = $("hero-collage");
-  box.innerHTML = "";
-
-  const heroImages = [
+  // TOPの3×3固定配置
+  // 左上：カール・フロッシー / 右下：ルシアン
+  const heroImages=[
     "images/Carl Flossy.jpg",
     "images/Alexandros.jpg",
     "images/Andrew.jpg",
@@ -498,330 +459,97 @@ function renderHero() {
     "images/Lucian.jpg"
   ];
 
-  heroImages.forEach(path => {
-    const c = characters.find(item => item.image === path);
-    if (!c) return;
-    const el = document.createElement("div");
-    el.className = "hero-tile";
-    el.innerHTML = imageMarkup(c);
+  heroImages.forEach(path=>{
+    const c=characters.find(item=>item.image===path);
+    if(!c)return;
+    const el=document.createElement("div");
+    el.className="hero-tile";
+    el.innerHTML=imageMarkup(c);
     box.appendChild(el);
   });
 }
+function estimateQuestions(n){
+  let total=0,current=n;
+  while(current>9){
+    const fullGroups=Math.floor(current/4);
+    const remainder=current%4;
+    total+=fullGroups+(remainder>=2?1:0);
+    current=fullGroups+(remainder>0?1:0);
+  }
+  return Math.max(total,1);
+}
+function startQuiz(){
+  state.active=shuffle(characters.map((c,i)=>({...c,id:i})));state.groups=[];state.groupIndex=0;state.round=0;state.roundWinners=[];
+  state.score=new Map(state.active.map(c=>[c.id,0]));state.reachedRound=new Map(state.active.map(c=>[c.id,0]));
+  state.totalEstimated=estimateQuestions(state.active.length);state.answered=0;state.result=[];beginRound();show("quiz");
+}
+function beginRound(){
+  state.round++;
+  state.active=shuffle(state.active);
+  state.active.forEach(c=>state.reachedRound.set(c.id,state.round));
 
-function makeGroups(items) {
-  if (items.length <= 4) return [items];
+  state.groups=[];
+  state.roundWinners=[];
 
-  const groupCount = Math.ceil(items.length / 4);
-  const baseSize = Math.floor(items.length / groupCount);
-  const remainder = items.length % groupCount;
+  const fullCount=Math.floor(state.active.length/4)*4;
+  const matched=state.active.slice(0,fullCount);
+  const leftovers=state.active.slice(fullCount);
 
-  const groups = [];
-  let index = 0;
-
-  for (let i = 0; i < groupCount; i++) {
-    const size = baseSize + (i < remainder ? 1 : 0);
-    groups.push(items.slice(index, index + size));
-    index += size;
+  for(let i=0;i<matched.length;i+=4){
+    state.groups.push(matched.slice(i,i+4));
   }
 
-  return groups;
-}
+  // 1人だけ余った場合のみ自動通過。
+  // 2〜3人余った場合は、その人数で比較して1人を選ぶ。
+  if(leftovers.length===1){
+    state.roundWinners.push(leftovers[0]);
+  }else if(leftovers.length>=2){
+    state.groups.push(leftovers);
+  }
 
-function startQuiz() {
-  state.items = characters.map((c, i) => ({ ...c, id: i }));
-  state.groups = [];
-  state.groupIndex = 0;
-  state.round = 0;
-  state.answered = 0;
-  state.result = [];
-  state.score = new Map(state.items.map(c => [c.id, 0]));
-  state.wins = new Map(state.items.map(c => [c.id, 0]));
-  state.appearances = new Map(state.items.map(c => [c.id, 0]));
-
-  const sampleGroups = makeGroups(state.items);
-  state.totalQuestions = sampleGroups.length * TOTAL_ROUNDS;
-
-  beginRound();
-  show("quiz");
-}
-
-function beginRound() {
-  state.round += 1;
-  state.groups = makeGroups(shuffle(state.items));
-  state.groupIndex = 0;
+  state.groupIndex=0;
   renderGroup();
 }
-
-function updateProgress() {
-  const pct = Math.min(100, Math.round((state.answered / state.totalQuestions) * 100));
-  $("percent").textContent = `${pct}%`;
-  $("bar").style.width = `${pct}%`;
+function updateProgress(){const pct=Math.min(99,Math.round(state.answered/state.totalEstimated*100));$("percent").textContent=`${pct}%`;$("bar").style.width=`${pct}%`;}
+function renderGroup(){
+  updateProgress();const group=state.groups[state.groupIndex];if(!group)return endRound();const wrap=$("choices");wrap.innerHTML="";wrap.dataset.count=String(group.length);
+  group.forEach(c=>{const card=document.createElement("article");card.className="choice";card.innerHTML=`<div class="choice-media">${imageMarkup(c)}</div><div class="choice-body"><div class="choice-name">${escapeHtml(c.name)}</div><div class="choice-work">${escapeHtml(c.work)}</div></div>`;card.addEventListener("click",()=>selectCharacter(c));wrap.appendChild(card);});
 }
-
-function renderGroup() {
-  updateProgress();
-
-  const group = state.groups[state.groupIndex];
-  if (!group) {
-    endRound();
-    return;
-  }
-
-  const wrap = $("choices");
-  wrap.innerHTML = "";
-  wrap.style.gridTemplateColumns = `repeat(${Math.min(group.length, 4)}, 1fr)`;
-
-  group.forEach(c => {
-    const card = document.createElement("article");
-    card.className = "choice";
-    card.innerHTML = `
-      <div class="choice-media">${imageMarkup(c)}</div>
-      <div class="choice-body">
-        <div class="choice-name">${escapeHtml(c.name)}</div>
-        <div class="choice-work">${escapeHtml(c.work)}</div>
-      </div>`;
-    card.addEventListener("click", () => selectCharacter(c));
-    wrap.appendChild(card);
-  });
+function selectCharacter(c){state.roundWinners.push(c);state.score.set(c.id,(state.score.get(c.id)||0)+100*state.round);state.answered++;state.groupIndex++;renderGroup();}
+function endRound(){const winners=[...new Map(state.roundWinners.map(c=>[c.id,c])).values()];if(winners.length<=9)return buildFinalRanking(winners);state.active=winners;beginRound();}
+function buildFinalRanking(finalists){
+  const finalistIds=new Set(finalists.map(c=>c.id));const all=characters.map((c,i)=>({...c,id:i}));
+  const sorted=[...all].sort((a,b)=>{const af=finalistIds.has(a.id)?1:0,bf=finalistIds.has(b.id)?1:0;if(af!==bf)return bf-af;const rd=(state.reachedRound.get(b.id)||0)-(state.reachedRound.get(a.id)||0);if(rd)return rd;const sd=(state.score.get(b.id)||0)-(state.score.get(a.id)||0);if(sd)return sd;return a.name.localeCompare(b.name,"ja");});
+  state.result=sorted.slice(0,9);renderResult();
 }
-
-function selectCharacter(selected) {
-  const group = state.groups[state.groupIndex];
-
-  group.forEach(c => {
-    state.appearances.set(c.id, (state.appearances.get(c.id) || 0) + 1);
-  });
-
-  state.wins.set(selected.id, (state.wins.get(selected.id) || 0) + 1);
-  state.score.set(selected.id, (state.score.get(selected.id) || 0) + (group.length - 1));
-
-  state.answered += 1;
-  state.groupIndex += 1;
-  renderGroup();
-}
-
-function endRound() {
-  if (state.round >= TOTAL_ROUNDS) {
-    buildFinalRanking();
-  } else {
-    beginRound();
-  }
-}
-
-function buildFinalRanking() {
-  const ranked = [...state.items].sort((a, b) => {
-    const scoreDiff = (state.score.get(b.id) || 0) - (state.score.get(a.id) || 0);
-    if (scoreDiff) return scoreDiff;
-
-    const winsDiff = (state.wins.get(b.id) || 0) - (state.wins.get(a.id) || 0);
-    if (winsDiff) return winsDiff;
-
-    const aRate = (state.appearances.get(a.id) || 0) ? (state.wins.get(a.id) || 0) / (state.appearances.get(a.id) || 1) : 0;
-    const bRate = (state.appearances.get(b.id) || 0) ? (state.wins.get(b.id) || 0) / (state.appearances.get(b.id) || 1) : 0;
-    if (bRate !== aRate) return bRate - aRate;
-
-    return a.name.localeCompare(b.name, "ja");
-  });
-
-  state.result = ranked.slice(0, 9);
-  renderResult();
-}
-
-function renderResult() {
-  const box = $("ranking");
-  box.innerHTML = "";
-
-  const displayOrder = [3, 4, 5, 1, 0, 2, 6, 7, 8];
-
-  displayOrder.forEach(resultIndex => {
-    const c = state.result[resultIndex];
-    if (!c) return;
-
-    const rank = resultIndex + 1;
-    const el = document.createElement("article");
-    el.className = `rank rank-${rank}`;
-
-    el.innerHTML = `
-      <div class="rank-badge">${rank}位</div>
-      <div class="rank-media">${imageMarkup(c)}</div>
-      <div class="rank-body">
-        <div class="rank-name">${escapeHtml(c.name)}</div>
-        <div class="rank-work">${escapeHtml(c.work)}</div>
-      </div>`;
-
-    box.appendChild(el);
-  });
-
+function renderResult(){
+  const box=$("ranking");box.innerHTML="";const displayOrder=[3,4,5,1,0,2,6,7,8];
+  displayOrder.forEach(resultIndex=>{const c=state.result[resultIndex];if(!c)return;const rank=resultIndex+1;const el=document.createElement("article");el.className=`rank rank-${rank}`;el.innerHTML=`<div class="rank-badge">${rank}位</div><div class="rank-media">${imageMarkup(c)}</div><div class="rank-body"><div class="rank-name">${escapeHtml(c.name)}</div><div class="rank-work">${escapeHtml(c.work)}</div></div>`;box.appendChild(el);});
   show("result");
 }
+$("start-btn").addEventListener("click",startQuiz);$("restart-btn").addEventListener("click",()=>show("home"));
 
-$("start-btn").addEventListener("click", startQuiz);
-$("restart-btn").addEventListener("click", () => show("home"));
+function loadImage(src){return new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src=imageSrc(src);});}
+function fitText(ctx,text,maxWidth,startSize,minSize=14){let size=startSize;while(size>minSize){ctx.font=`700 ${size}px sans-serif`;if(ctx.measureText(text).width<=maxWidth)return size;size-=2;}return minSize;}
+function drawSquareCoverTop(ctx,img,x,y,size){const scale=Math.max(size/img.width,size/img.height);const dw=img.width*scale,dh=img.height*scale;const dx=x+(size-dw)/2,dy=y;ctx.save();ctx.beginPath();ctx.rect(x,y,size,size);ctx.clip();ctx.drawImage(img,dx,dy,dw,dh);ctx.restore();}
 
-function loadImage(src) {
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => resolve(null);
-    img.src = imageSrc(src);
-  });
-}
-
-function fitText(ctx, text, maxWidth, startSize, minSize = 14) {
-  let size = startSize;
-  while (size > minSize) {
-    ctx.font = `700 ${size}px sans-serif`;
-    if (ctx.measureText(text).width <= maxWidth) return size;
-    size -= 2;
+async function createResultBlob(){
+  const W=1200,margin=70,gap=18,top=245,cell=(W-margin*2-gap*2)/3,imgH=cell,labelH=112,H=Math.ceil(top+3*(imgH+labelH)+2*gap+110);
+  const canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;const ctx=canvas.getContext("2d");
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,W,H);ctx.fillStyle="#111827";ctx.font="800 38px sans-serif";ctx.fillText("MICHAEL SHEEN",70,78);
+  const grad=ctx.createLinearGradient(70,100,650,100);grad.addColorStop(0,"#7060ea");grad.addColorStop(1,"#ec2f9c");ctx.fillStyle=grad;ctx.font="900 74px sans-serif";ctx.fillText("好き顔9選",70,155);
+  ctx.fillStyle="#6b7280";ctx.font="400 25px sans-serif";ctx.fillText("マイケル・シーン 好き顔9選",72,198);
+  const displayOrder=[3,4,5,1,0,2,6,7,8];
+  for(let i=0;i<displayOrder.length;i++){const resultIndex=displayOrder[i],c=state.result[resultIndex];if(!c)continue;const rank=resultIndex+1,row=Math.floor(i/3),col=i%3,x=margin+col*(cell+gap),y=top+row*(imgH+labelH+gap);ctx.fillStyle="#eef0f3";ctx.fillRect(x,y,cell,imgH);const im=await loadImage(c.image);if(im)drawSquareCoverTop(ctx,im,x,y,cell);
+    ctx.fillStyle=rank===1?"#b03bd1":rank===2?"#5f82d9":"#fff";ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x+10,y+10,68,48,24);else ctx.rect(x+10,y+10,68,48);ctx.fill();ctx.fillStyle=rank<=2?"#fff":"#111827";ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="800 22px sans-serif";ctx.fillText(`${rank}位`,x+44,y+34);ctx.textAlign="left";ctx.textBaseline="alphabetic";
+    ctx.fillStyle="#111827";const ns=fitText(ctx,c.name,cell-24,27,16);ctx.font=`800 ${ns}px sans-serif`;ctx.fillText(c.name,x+10,y+imgH+38);ctx.fillStyle="#6b7280";const ws=fitText(ctx,c.work,cell-24,18,12);ctx.font=`400 ${ws}px sans-serif`;ctx.fillText(c.work,x+10,y+imgH+73);
   }
-  return minSize;
+  ctx.fillStyle="#9ca3af";ctx.font="400 20px sans-serif";ctx.fillText(location.hostname+location.pathname,70,H-38);return new Promise(resolve=>canvas.toBlob(resolve,"image/png",1));
 }
-
-function drawSquareCoverTop(ctx, img, x, y, size) {
-  const scale = Math.max(size / img.width, size / img.height);
-  const dw = img.width * scale;
-  const dh = img.height * scale;
-  const dx = x + (size - dw) / 2;
-  const dy = y;
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(x, y, size, size);
-  ctx.clip();
-  ctx.drawImage(img, dx, dy, dw, dh);
-  ctx.restore();
-}
-
-async function createResultBlob() {
-  const W = 1200;
-  const margin = 70;
-  const gap = 18;
-  const top = 245;
-  const cell = (W - margin * 2 - gap * 2) / 3;
-  const imgH = cell;
-  const labelH = 112;
-  const H = Math.ceil(top + 3 * (imgH + labelH) + 2 * gap + 110);
-
-  const canvas = document.createElement("canvas");
-  canvas.width = W;
-  canvas.height = H;
-  const ctx = canvas.getContext("2d");
-
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = "#111827";
-  ctx.font = "800 38px sans-serif";
-  ctx.fillText("MICHAEL SHEEN", 70, 78);
-
-  const grad = ctx.createLinearGradient(70, 100, 650, 100);
-  grad.addColorStop(0, "#7060ea");
-  grad.addColorStop(1, "#ec2f9c");
-  ctx.fillStyle = grad;
-  ctx.font = "900 74px sans-serif";
-  ctx.fillText("好き顔9選", 70, 155);
-
-  ctx.fillStyle = "#6b7280";
-  ctx.font = "400 25px sans-serif";
-  ctx.fillText("マイケル・シーン 好き顔9選", 72, 198);
-
-  const displayOrder = [3, 4, 5, 1, 0, 2, 6, 7, 8];
-
-  for (let i = 0; i < displayOrder.length; i++) {
-    const resultIndex = displayOrder[i];
-    const c = state.result[resultIndex];
-    if (!c) continue;
-
-    const rank = resultIndex + 1;
-    const row = Math.floor(i / 3);
-    const col = i % 3;
-    const x = margin + col * (cell + gap);
-    const y = top + row * (imgH + labelH + gap);
-
-    ctx.fillStyle = "#eef0f3";
-    ctx.fillRect(x, y, cell, imgH);
-
-    const im = await loadImage(c.image);
-    if (im) drawSquareCoverTop(ctx, im, x, y, cell);
-
-    ctx.fillStyle = rank === 1 ? "#b03bd1" : rank === 2 ? "#5f82d9" : "#fff";
-    ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(x + 10, y + 10, 68, 48, 24);
-    else ctx.rect(x + 10, y + 10, 68, 48);
-    ctx.fill();
-
-    ctx.fillStyle = rank <= 2 ? "#fff" : "#111827";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font = "800 22px sans-serif";
-    ctx.fillText(`${rank}位`, x + 44, y + 34);
-
-    ctx.textAlign = "left";
-    ctx.textBaseline = "alphabetic";
-
-    ctx.fillStyle = "#111827";
-    const ns = fitText(ctx, c.name, cell - 24, 27, 16);
-    ctx.font = `800 ${ns}px sans-serif`;
-    ctx.fillText(c.name, x + 10, y + imgH + 38);
-
-    ctx.fillStyle = "#6b7280";
-    const ws = fitText(ctx, c.work, cell - 24, 18, 12);
-    ctx.font = `400 ${ws}px sans-serif`;
-    ctx.fillText(c.work, x + 10, y + imgH + 73);
-  }
-
-  ctx.fillStyle = "#9ca3af";
-  ctx.font = "400 20px sans-serif";
-  ctx.fillText(location.hostname + location.pathname, 70, H - 38);
-
-  return new Promise(resolve => canvas.toBlob(resolve, "image/png", 1));
-}
-
-function downloadBlob(blob, name) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-$("save-btn").addEventListener("click", async () => {
-  const blob = await createResultBlob();
-  if (blob) downloadBlob(blob, "ms-sukigao-top9.png");
-});
-
-$("share-btn").addEventListener("click", async () => {
-  const shareUrl = "https://qnopod.github.io/michael-sheen-character-sort/?v=3";
-  const shareText = `私のマイケル・シーン 好き顔9選 👑
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+$("save-btn").addEventListener("click",async()=>{const blob=await createResultBlob();if(blob)downloadBlob(blob,"ms-sukigao-top9.png");});
+$("share-btn").addEventListener("click",async()=>{const shareText=`私のマイケル・シーン 好き顔9選 👑
 
 #MSCharacterSort
-${shareUrl}`;
-
-  const blob = await createResultBlob();
-  if (!blob) return;
-
-  const file = new File([blob], "ms-sukigao-top9.png", { type: "image/png" });
-
-  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-    try {
-      await navigator.share({
-        title: "マイケル・シーン好き顔9選",
-        text: shareText,
-        files: [file]
-      });
-      return;
-    } catch (e) {
-      if (e && e.name === "AbortError") return;
-    }
-  }
-
-  const intent = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText);
-  const xWindow = window.open(intent, "_blank", "noopener,noreferrer");
-  if (!xWindow) {
-    window.location.href = intent;
-  }
-  downloadBlob(blob, "ms-sukigao-top9.png");
-});
-
+https://qnopod.github.io/michael-sheen-character-sort/?v=3`;const blob=await createResultBlob();if(!blob)return;const file=new File([blob],"ms-sukigao-top9.png",{type:"image/png"});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({title:"マイケル・シーン好き顔9選",text:shareText,files:[file]});return;}catch(e){if(e&&e.name==="AbortError")return;}}const intent="https://twitter.com/intent/tweet?text="+encodeURIComponent(shareText);window.open(intent,"_blank","noopener,noreferrer");downloadBlob(blob,"ms-sukigao-top9.png");});
 renderHero();
