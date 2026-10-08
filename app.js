@@ -35,6 +35,11 @@ const characters = [
     "image": "images/Arthur.jpg"
   },
   {
+    "name": "オースティン",
+    "work": "Home Again",
+    "image": "images/Austen.jpg"
+  },
+  {
     "name": "アジラフェル",
     "work": "グッド・オーメンズ",
     "image": "images/Aziraphale.jpg"
