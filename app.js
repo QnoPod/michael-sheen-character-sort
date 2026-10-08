@@ -520,5 +520,5 @@ $("save-btn").addEventListener("click",async()=>{const blob=await createResultBl
 $("share-btn").addEventListener("click",async()=>{const shareText=`私のマイケル・シーン 好き顔9選 👑
 
 #MSCharacterSort
-${location.href}`;const blob=await createResultBlob();if(!blob)return;const file=new File([blob],"ms-sukigao-top9.png",{type:"image/png"});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({title:"マイケル・シーン好き顔9選",text:shareText,files:[file]});return;}catch(e){if(e&&e.name==="AbortError")return;}}const intent="https://twitter.com/intent/tweet?text="+encodeURIComponent(shareText);window.open(intent,"_blank","noopener,noreferrer");downloadBlob(blob,"ms-sukigao-top9.png");});
+https://qnopod.github.io/michael-sheen-character-sort/?v=2`;const blob=await createResultBlob();if(!blob)return;const file=new File([blob],"ms-sukigao-top9.png",{type:"image/png"});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({title:"マイケル・シーン好き顔9選",text:shareText,files:[file]});return;}catch(e){if(e&&e.name==="AbortError")return;}}const intent="https://twitter.com/intent/tweet?text="+encodeURIComponent(shareText);window.open(intent,"_blank","noopener,noreferrer");downloadBlob(blob,"ms-sukigao-top9.png");});
 renderHero();
