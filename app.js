@@ -444,7 +444,29 @@ function imageMarkup(c){return `<img src="${imageSrc(c.image)}" alt="${escapeHtm
 function renderHero(){
   $("member-count").textContent=`${characters.length}人から、あなたのTOP9を。`;
   const box=$("hero-collage");box.innerHTML="";
-  characters.slice(0,9).forEach(c=>{const el=document.createElement("div");el.className="hero-tile";el.innerHTML=imageMarkup(c);box.appendChild(el);});
+
+  // TOPの3×3固定配置
+  // 左上：カール・フロッシー / 右下：ルシアン
+  const heroImages=[
+    "images/Carl Flossy.jpg",
+    "images/Alexandros.jpg",
+    "images/Andrew.jpg",
+    "images/Aneurin Bevan.JPG",
+    "images/Aro Volturi.jpg",
+    "images/Art Honeyman.jpg",
+    "images/Arthur.jpg",
+    "images/Aziraphale.jpg",
+    "images/Lucian.jpg"
+  ];
+
+  heroImages.forEach(path=>{
+    const c=characters.find(item=>item.image===path);
+    if(!c)return;
+    const el=document.createElement("div");
+    el.className="hero-tile";
+    el.innerHTML=imageMarkup(c);
+    box.appendChild(el);
+  });
 }
 function estimateQuestions(n){let total=0,current=n;while(current>9){total+=Math.floor(current/4);current=Math.floor(current/4)+(current%4);}return Math.max(total,1);}
 function startQuiz(){
