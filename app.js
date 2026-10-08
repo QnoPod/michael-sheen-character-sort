@@ -778,8 +778,8 @@ function drawSquareCoverTop(ctx,img,x,y,size){const scale=Math.max(size/img.widt
 async function createResultBlob(){
   const W=1200,margin=70,gap=18,top=245,cell=(W-margin*2-gap*2)/3,imgH=cell,labelH=112,H=Math.ceil(top+3*(imgH+labelH)+2*gap+110);
   const canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;const ctx=canvas.getContext("2d");
-  ctx.fillStyle="#fff";ctx.fillRect(0,0,W,H);ctx.fillStyle="#111827";ctx.font="800 38px sans-serif";ctx.fillText("MICHAEL SHEEN",70,78);
-  const grad=ctx.createLinearGradient(70,100,650,100);grad.addColorStop(0,"#7060ea");grad.addColorStop(1,"#ec2f9c");ctx.fillStyle=grad;ctx.font="900 74px sans-serif";ctx.fillText("好き顔9選",70,155);
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,W,H);ctx.fillStyle="#111827";ctx.font="800 38px sans-serif";ctx.fillText("MICHAEL SHEEN CHARACTER",70,78);
+  const grad=ctx.createLinearGradient(70,100,650,100);grad.addColorStop(0,"#7060ea");grad.addColorStop(1,"#ec2f9c");ctx.fillStyle=grad;ctx.font="900 74px sans-serif";ctx.fillText("MY TOP 9",70,155);
   ctx.fillStyle="#6b7280";ctx.font="400 25px sans-serif";ctx.fillText("マイケル・シーン 好き顔9選",72,198);
   const displayOrder=[3,4,5,1,0,2,6,7,8];
   for(let i=0;i<displayOrder.length;i++){const resultIndex=displayOrder[i],c=state.result[resultIndex];if(!c)continue;const rank=resultIndex+1,row=Math.floor(i/3),col=i%3,x=margin+col*(cell+gap),y=top+row*(imgH+labelH+gap);ctx.fillStyle="#eef0f3";ctx.fillRect(x,y,cell,imgH);const im=await loadImage(c.image);if(im)drawSquareCoverTop(ctx,im,x,y,cell);
