@@ -335,6 +335,11 @@ const characters = [
     "image": "images/Rupert Simmons.jpg"
   },
   {
+    "name": "アントニオ・サリエリ",
+    "work": "アマデウス",
+    "image": "images/Salieri.jpg"
+  },
+  {
     "name": "シフティ・グラフ",
     "work": "Out There",
     "image": "images/Shifty Gruff.jpg"
