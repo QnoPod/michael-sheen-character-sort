@@ -1,243 +1,433 @@
 const characters = [
   {
-    "name": "アジラフェル",
-    "work": "Good Omens",
-    "image": "images/aziraphale.png"
+    "name": "アダム・バントン",
+    "work": "Airlock Or How To Say Goodbye In Space",
+    "image": "images/Adam Banton.jpg"
   },
   {
-    "name": "ウィリアム・マスターズ",
-    "work": "Masters of Sex",
-    "image": "images/william-masters.png"
-  },
-  {
-    "name": "マーティン・ウィットリー",
-    "work": "Prodigal Son",
-    "image": "images/martin-whitly.png"
-  },
-  {
-    "name": "マイケル",
-    "work": "Staged",
-    "image": "images/michael-staged.png"
-  },
-  {
-    "name": "トニー・ブレア",
-    "work": "The Deal / The Queen / The Special Relationship",
-    "image": "images/tony-blair.png"
-  },
-  {
-    "name": "デヴィッド・フロスト",
-    "work": "Frost/Nixon",
-    "image": "images/david-frost.png"
-  },
-  {
-    "name": "ブライアン・クラフ",
-    "work": "The Damned United",
-    "image": "images/brian-clough.png"
-  },
-  {
-    "name": "ルシアン",
-    "work": "Underworldシリーズ",
-    "image": "images/lucian.png"
-  },
-  {
-    "name": "アロ",
-    "work": "The Twilight Saga",
-    "image": "images/aro.png"
-  },
-  {
-    "name": "キャスター／ズース",
-    "work": "TRON: Legacy",
-    "image": "images/castor-zuse.png"
-  },
-  {
-    "name": "アーサー",
-    "work": "Passengers",
-    "image": "images/arthur.png"
-  },
-  {
-    "name": "ポール・ベイツ",
-    "work": "Midnight in Paris",
-    "image": "images/paul-bates.png"
-  },
-  {
-    "name": "ケネス・ウィリアムズ",
-    "work": "Kenneth Williams: Fantabulosa!",
-    "image": "images/kenneth-williams.png"
-  },
-  {
-    "name": "マーク・ファーネス",
-    "work": "Dirty Filthy Love",
-    "image": "images/mark-furness.png"
-  },
-  {
-    "name": "ネロ",
-    "work": "Ancient Rome: The Rise and Fall of an Empire",
-    "image": "images/nero.png"
-  },
-  {
-    "name": "H・G・ウェルズ",
-    "work": "H. G. Wells: War with the World",
-    "image": "images/hg-wells.png"
-  },
-  {
-    "name": "ウェズリー・スナイプス",
-    "work": "30 Rock",
-    "image": "images/wesley-snipes.png"
-  },
-  {
-    "name": "ローランド・ブラム",
-    "work": "The Good Fight",
-    "image": "images/roland-blum.png"
-  },
-  {
-    "name": "クリス・タラント",
-    "work": "Quiz",
-    "image": "images/chris-tarrant.png"
+    "name": "アレクサンドロス・エリオポロス",
+    "work": "When She Danced",
+    "image": "images/Alexandros.jpg"
   },
   {
     "name": "アンドリュー",
     "work": "Best Interests",
-    "image": "images/andrew-best-interests.png"
-  },
-  {
-    "name": "アンドルー王子",
-    "work": "A Very Royal Scandal",
-    "image": "images/prince-andrew.png"
-  },
-  {
-    "name": "デニー・ドリスコル",
-    "work": "The Way",
-    "image": "images/denny-driscoll.png"
-  },
-  {
-    "name": "ポール",
-    "work": "The Sandman",
-    "image": "images/paul-sandman.png"
-  },
-  {
-    "name": "デヴィッド・シャーボーン",
-    "work": "Vardy v Rooney: A Courtroom Drama",
-    "image": "images/david-sherborne.png"
-  },
-  {
-    "name": "マルコム・ハウ",
-    "work": "Apostle",
-    "image": "images/malcolm-howe.png"
-  },
-  {
-    "name": "ウィリアム・ボールドウッド",
-    "work": "Far from the Madding Crowd",
-    "image": "images/william-boldwood.png"
-  },
-  {
-    "name": "カルロス",
-    "work": "Nocturnal Animals",
-    "image": "images/carlos.png"
-  },
-  {
-    "name": "フィリップ・コーエン",
-    "work": "Norman",
-    "image": "images/philip-cohen.png"
-  },
-  {
-    "name": "オースティン",
-    "work": "Home Again",
-    "image": "images/austen.png"
-  },
-  {
-    "name": "クレイグ・フィッシャー",
-    "work": "Brad's Status",
-    "image": "images/craig-fisher.png"
-  },
-  {
-    "name": "ブレア・マッドフライ",
-    "work": "Dolittle",
-    "image": "images/blair-mudfly.png"
-  },
-  {
-    "name": "トニー・タワーズ",
-    "work": "Last Train to Christmas",
-    "image": "images/tony-towers.png"
-  },
-  {
-    "name": "ロビー・ロス",
-    "work": "Wilde",
-    "image": "images/robbie-ross.png"
-  },
-  {
-    "name": "マイルズ・メイトランド",
-    "work": "Bright Young Things",
-    "image": "images/miles-maitland.png"
-  },
-  {
-    "name": "ウィリアム・トレンチ",
-    "work": "The Four Feathers",
-    "image": "images/william-trench.png"
-  },
-  {
-    "name": "ブラッドショー",
-    "work": "Mary Reilly",
-    "image": "images/bradshaw.png"
-  },
-  {
-    "name": "コリン",
-    "work": "Heartlands",
-    "image": "images/colin.png"
-  },
-  {
-    "name": "ソーン・ジャミソン",
-    "work": "Laws of Attraction",
-    "image": "images/thorne-jamison.png"
-  },
-  {
-    "name": "ルパート・シモンズ",
-    "work": "Blood Diamond",
-    "image": "images/rupert-simmons.png"
-  },
-  {
-    "name": "アート・ハニーマン",
-    "work": "Music Within",
-    "image": "images/art-honeyman.png"
-  },
-  {
-    "name": "ユスフ／スティーヴン・アーサー",
-    "work": "Unthinkable",
-    "image": "images/yusuf-steven-arthur.png"
-  },
-  {
-    "name": "チェット・ハルナー",
-    "work": "The Spoils of Babylon",
-    "image": "images/chet-halner.png"
-  },
-  {
-    "name": "ケントン・プライス",
-    "work": "The Spoils Before Dying",
-    "image": "images/kenton-price.png"
-  },
-  {
-    "name": "カスピアン・ウィント",
-    "work": "7 Days in Hell",
-    "image": "images/caspian-wint.png"
-  },
-  {
-    "name": "デイヴ・エヴァンス",
-    "work": "The Green Hollow",
-    "image": "images/dave-evans.png"
-  },
-  {
-    "name": "カール・フロッシー",
-    "work": "Michael Bolton's Big, Sexy Valentine's Day Special",
-    "image": "images/carl-flossy.png"
-  },
-  {
-    "name": "ポーター",
-    "work": "To Provide All People",
-    "image": "images/porter.png"
+    "image": "images/Andrew.jpg"
   },
   {
     "name": "アナイリン・ベヴァン",
     "work": "Nye",
-    "image": "images/aneurin-bevan.png"
+    "image": "images/Aneurin Bevan.JPG"
+  },
+  {
+    "name": "アロ",
+    "work": "ニュームーン／トワイライト・サーガ",
+    "image": "images/Aro Volturi.jpg"
+  },
+  {
+    "name": "アート・ハニーマン",
+    "work": "Music Within",
+    "image": "images/Art Honeyman.jpg"
+  },
+  {
+    "name": "アーサー",
+    "work": "パッセンジャー",
+    "image": "images/Arthur.jpg"
+  },
+  {
+    "name": "アジラフェル",
+    "work": "グッド・オーメンズ",
+    "image": "images/Aziraphale.jpg"
+  },
+  {
+    "name": "ビル・キャロル",
+    "work": "Beautiful Boy",
+    "image": "images/Bill Carroll.jpg"
+  },
+  {
+    "name": "ブレア・マッドフライ",
+    "work": "ドクター・ドリトル",
+    "image": "images/Blair Müdfly.jpg"
+  },
+  {
+    "name": "ブラッドショー",
+    "work": "ジキル＆ハイド",
+    "image": "images/Bradshaw.jpg"
+  },
+  {
+    "name": "ブライアン・クラフ",
+    "work": "くたばれ！ユナイテッド −サッカー万歳！−",
+    "image": "images/Brian Clough.jpg"
+  },
+  {
+    "name": "カリギュラ",
+    "work": "Caligula",
+    "image": "images/Caligula.jpg"
+  },
+  {
+    "name": "ウィル・チャリティ大尉",
+    "work": "マライアと失われた秘宝の謎",
+    "image": "images/Captain Will Charity.jpg"
+  },
+  {
+    "name": "カール・フロッシー",
+    "work": "Michael Bolton's Big, Sexy Valentine's Day Special",
+    "image": "images/Carl Flossy.jpg"
+  },
+  {
+    "name": "カルロス",
+    "work": "ノクターナル・アニマルズ",
+    "image": "images/Carlos.jpg"
+  },
+  {
+    "name": "カスピアン・ウィント",
+    "work": "7 Days in Hell",
+    "image": "images/Caspian Wint.jpg"
+  },
+  {
+    "name": "チャーリー・チャップリン",
+    "work": "Shooting the Hollywood Stars",
+    "image": "images/Charlie Chaplin.jpg"
+  },
+  {
+    "name": "クリス・タラント",
+    "work": "クイズ〜100万ポンドを夢見た男〜",
+    "image": "images/Chris Tarrant.jpg"
+  },
+  {
+    "name": "コリン",
+    "work": "Heartlands",
+    "image": "images/Colin.jpg"
+  },
+  {
+    "name": "クレイグ・フィッシャー",
+    "work": "47歳 人生のステータス",
+    "image": "images/Craig Fisher.jpg"
+  },
+  {
+    "name": "デヴィッド・フロスト",
+    "work": "フロスト×ニクソン",
+    "image": "images/David Frost.jpg"
+  },
+  {
+    "name": "デヴィッド・シャーボーン",
+    "work": "Vardy v Rooney: A Courtroom Drama",
+    "image": "images/David Sherborne.jpg"
+  },
+  {
+    "name": "デヴィッド",
+    "work": "Barbados",
+    "image": "images/David.jpg"
+  },
+  {
+    "name": "デニー・ドリスコル",
+    "work": "The Way",
+    "image": "images/Denny Driscoll.jpg"
+  },
+  {
+    "name": "ヒューズ医師",
+    "work": "Pobol y Cwm",
+    "image": "images/Dr. Hughes.jpg"
+  },
+  {
+    "name": "マーティン・ウィットリー医師",
+    "work": "プロディガル・サン 殺人鬼の系譜",
+    "image": "images/Dr. Martin Whitly.jpg"
+  },
+  {
+    "name": "花屋",
+    "work": "Few Options",
+    "image": "images/Florist.jpg"
+  },
+  {
+    "name": "フラムトン・ナッテル",
+    "work": "The Open Doors",
+    "image": "images/Framton Nuttel.jpg"
+  },
+  {
+    "name": "フランシス・ハーディ",
+    "work": "Faith Healer",
+    "image": "images/Francis Hardy.jpg"
+  },
+  {
+    "name": "フレッド・ウェイル",
+    "work": "Kill the Messenger",
+    "image": "images/Fred Weil.jpg"
+  },
+  {
+    "name": "H・G・ウェルズ",
+    "work": "H. G. Wells: War with the World",
+    "image": "images/H. G. Wells.jpg"
+  },
+  {
+    "name": "ハムレット",
+    "work": "Hamlet",
+    "image": "images/Hamlet.jpg"
+  },
+  {
+    "name": "ハリー・ジョーンズ",
+    "work": "Dead Long Enough",
+    "image": "images/Harry Jones.jpg"
+  },
+  {
+    "name": "ヘンリー五世",
+    "work": "Henry V",
+    "image": "images/Henry V.jpg"
+  },
+  {
+    "name": "ジェレミー・ダイソン",
+    "work": "The League of Gentlemen's Apocalypse",
+    "image": "images/Jeremy Dyson.jpg"
+  },
+  {
+    "name": "ジミー・ポーター",
+    "work": "怒りを込めて振り返れ",
+    "image": "images/Jimmy Porter.jpg"
+  },
+  {
+    "name": "ジミー・ポーター",
+    "work": "怒りを込めて振り返れ",
+    "image": "images/Jimmy.jpg"
+  },
+  {
+    "name": "ジョー",
+    "work": "哀しきギャロウグラス",
+    "image": "images/Joe.jpg"
+  },
+  {
+    "name": "ケネス・ウィリアムズ",
+    "work": "Kenneth Williams: Fantabulosa!",
+    "image": "images/Kenneth Williams.jpg"
+  },
+  {
+    "name": "ケントン・プライス",
+    "work": "The Spoils Before Dying",
+    "image": "images/Kenton Price.jpg"
+  },
+  {
+    "name": "ランプリド",
+    "work": "The Blind Men",
+    "image": "images/Lamprido.jpg"
+  },
+  {
+    "name": "レニー",
+    "work": "The Homecoming",
+    "image": "images/Lenny.jpg"
+  },
+  {
+    "name": "ロドヴィコ",
+    "work": "オセロ",
+    "image": "images/Lodovico.jpg"
+  },
+  {
+    "name": "オリヴァー卿",
+    "work": "タイムライン",
+    "image": "images/Lord Oliver de Vannes.jpg"
+  },
+  {
+    "name": "ルシアン",
+    "work": "アンダーワールド",
+    "image": "images/Lucian.jpg"
+  },
+  {
+    "name": "マルコム・ハウ",
+    "work": "アポストル 復讐の掟",
+    "image": "images/Malcolm Howe.jpg"
+  },
+  {
+    "name": "マーク・ファーネス",
+    "work": "Dirty Filthy Love",
+    "image": "images/Mark Furness.jpg"
+  },
+  {
+    "name": "マーク",
+    "work": "アドミッション −親たちの入学試験−",
+    "image": "images/Mark.jpg"
+  },
+  {
+    "name": "マーティン・ギャモン",
+    "work": "The UN Inspector",
+    "image": "images/Martin Gammon.jpg"
+  },
+  {
+    "name": "マイケル",
+    "work": "ステージド",
+    "image": "images/Michael.jpg"
+  },
+  {
+    "name": "マイルズ・メイトランド",
+    "work": "ブライト・ヤング・シングス",
+    "image": "images/Miles Maitland.jpg"
+  },
+  {
+    "name": "モーツァルト",
+    "work": "アマデウス",
+    "image": "images/Mozart.jpg"
+  },
+  {
+    "name": "ネロ",
+    "work": "ザ・ローマ 帝国の興亡",
+    "image": "images/Nero.jpg"
+  },
+  {
+    "name": "オウェイン・ジェンキンス",
+    "work": "Under Milk Wood",
+    "image": "images/Owain Jenkins.jpg"
+  },
+  {
+    "name": "ポール・ベイツ",
+    "work": "ミッドナイト・イン・パリ",
+    "image": "images/Paul Bates.jpg"
+  },
+  {
+    "name": "ペール・ギュント",
+    "work": "ペール・ギュント",
+    "image": "images/Peer Gynt.jpg"
+  },
+  {
+    "name": "ペルディカン",
+    "work": "Don't Fool With Love",
+    "image": "images/Perdican.jpg"
+  },
+  {
+    "name": "フィリップ・コーエン",
+    "work": "嘘はフィクサーのはじまり",
+    "image": "images/Philip Cohen.jpg"
+  },
+  {
+    "name": "フィリップ",
+    "work": "Maigret",
+    "image": "images/Philippe.jpg"
+  },
+  {
+    "name": "ポーター",
+    "work": "To Provide All People",
+    "image": "images/Porter.jpg"
+  },
+  {
+    "name": "司祭",
+    "work": "キングダム・オブ・ヘブン",
+    "image": "images/Priest.jpg"
+  },
+  {
+    "name": "ヨーク公爵アンドリュー王子",
+    "work": "英国スキャンダル〜王室を揺るがしたインタビュー",
+    "image": "images/Prince Andrew.jpg"
+  },
+  {
+    "name": "ロビー・ロス",
+    "work": "オスカー・ワイルド",
+    "image": "images/Robbie Ross.jpg"
+  },
+  {
+    "name": "ローランド・ブラム",
+    "work": "グッド・ファイト",
+    "image": "images/Roland Blum.jpg"
+  },
+  {
+    "name": "ロミオ",
+    "work": "ロミオとジュリエット",
+    "image": "images/Romeo.jpg"
+  },
+  {
+    "name": "ルパート・シモンズ",
+    "work": "ブラッド・ダイヤモンド",
+    "image": "images/Rupert Simmons.jpg"
+  },
+  {
+    "name": "シフティ・グラフ",
+    "work": "Out There",
+    "image": "images/Shifty Gruff.jpg"
+  },
+  {
+    "name": "スラヴキン・オハラ博士",
+    "work": "ヘンリー・アンド・ザ・ファミリー",
+    "image": "images/Slavkin O'Hara.jpg"
+  },
+  {
+    "name": "スペンサー・ギャヴェストン",
+    "work": "Le Livre de Spencer",
+    "image": "images/Spencer Gaveston.jpg"
+  },
+  {
+    "name": "舞台監督",
+    "work": "Our Town",
+    "image": "images/Stage Manager.jpg"
+  },
+  {
+    "name": "スティーブン・アーサー・ヤンガー",
+    "work": "4デイズ",
+    "image": "images/Steven Arthur.jpg"
+  },
+  {
+    "name": "バンカー",
+    "work": "The Banker",
+    "image": "images/The Banker.jpg"
+  },
+  {
+    "name": "バット",
+    "work": "スローターハウス・ルールズ",
+    "image": "images/The Bat.jpg"
+  },
+  {
+    "name": "教師",
+    "work": "The Gospel of Us",
+    "image": "images/The Teacher.jpg"
+  },
+  {
+    "name": "ソーン・ジェイミソン",
+    "work": "恋の法律",
+    "image": "images/Thorne Jamison.jpg"
+  },
+  {
+    "name": "トミー・アトキンス",
+    "work": "Resistance",
+    "image": "images/Tommy Atkins.jpg"
+  },
+  {
+    "name": "トニー・ブレア",
+    "work": "The Deal",
+    "image": "images/Tony Blair_The Deal.jpg"
+  },
+  {
+    "name": "トニー・ブレア",
+    "work": "クィーン",
+    "image": "images/Tony Blair_The Queen.jpg"
+  },
+  {
+    "name": "トニー・タワーズ",
+    "work": "Last Train to Christmas",
+    "image": "images/Tony Towers.jpg"
+  },
+  {
+    "name": "ウェズリー・スナイプス",
+    "work": "30 Rock",
+    "image": "images/Wesley Snipes.jpg"
+  },
+  {
+    "name": "ウィリアム・ボールドウッド",
+    "work": "Far from the Madding Crowd",
+    "image": "images/William Boldwood.jpg"
+  },
+  {
+    "name": "ウィリアム・マスターズ博士",
+    "work": "マスターズ・オブ・セックス",
+    "image": "images/William H. Masters.jpg"
+  },
+  {
+    "name": "ウィリアム・トレンチ",
+    "work": "サハラに舞う羽根",
+    "image": "images/William Trench.jpg"
+  },
+  {
+    "name": "ウィンストン・チャーチル",
+    "work": "Fortitude",
+    "image": "images/Winston Churchill.jpg"
+  },
+  {
+    "name": "ズース／キャスター",
+    "work": "トロン: レガシー",
+    "image": "images/Zuse.jpg"
   }
 ];
 
